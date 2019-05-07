@@ -1,0 +1,6 @@
+C:\Users\823719\Downloads\TravelExperts\TravelExperts\Data\obj\Debug\Data.csprojAssemblyReference.cache
+C:\Users\823719\Downloads\TravelExperts\TravelExperts\Data\obj\Debug\Data.csproj.CoreCompileInputs.cache
+C:\Users\823719\Downloads\TravelExperts\TravelExperts\Data\bin\Debug\Data.dll
+C:\Users\823719\Downloads\TravelExperts\TravelExperts\Data\bin\Debug\Data.pdb
+C:\Users\823719\Downloads\TravelExperts\TravelExperts\Data\obj\Debug\Data.dll
+C:\Users\823719\Downloads\TravelExperts\TravelExperts\Data\obj\Debug\Data.pdb
