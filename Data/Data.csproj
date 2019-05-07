@@ -50,6 +50,8 @@
     <Compile Include="ProductSupplier.cs" />
     <Compile Include="ProductSupplierDB.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Suppliers.cs" />
+    <Compile Include="SuppliersDB.cs" />
     <Compile Include="TravelExpertsDB.cs" />
     <Compile Include="Validator.cs" />
   </ItemGroup>
