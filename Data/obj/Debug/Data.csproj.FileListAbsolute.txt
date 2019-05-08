@@ -10,3 +10,9 @@ C:\Users\823719\source\repos\TravelExpertProject\Data\obj\Debug\Data.csprojAssem
 C:\Users\823719\source\repos\TravelExpertProject\Data\obj\Debug\Data.csproj.CoreCompileInputs.cache
 C:\Users\823719\source\repos\TravelExpertProject\Data\obj\Debug\Data.dll
 C:\Users\823719\source\repos\TravelExpertProject\Data\obj\Debug\Data.pdb
+C:\Users\823726\CPRG 200\manpower-c-\manpower-c-\TravelExpertProject\Data\bin\Debug\Data.dll
+C:\Users\823726\CPRG 200\manpower-c-\manpower-c-\TravelExpertProject\Data\bin\Debug\Data.pdb
+C:\Users\823726\CPRG 200\manpower-c-\manpower-c-\TravelExpertProject\Data\obj\Debug\Data.csprojResolveAssemblyReference.cache
+C:\Users\823726\CPRG 200\manpower-c-\manpower-c-\TravelExpertProject\Data\obj\Debug\Data.csproj.CoreCompileInputs.cache
+C:\Users\823726\CPRG 200\manpower-c-\manpower-c-\TravelExpertProject\Data\obj\Debug\Data.dll
+C:\Users\823726\CPRG 200\manpower-c-\manpower-c-\TravelExpertProject\Data\obj\Debug\Data.pdb

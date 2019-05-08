@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Data
 {
+    [DataObject(true)]
     public static class PackageDB
     {
 
@@ -16,6 +18,7 @@ namespace Data
         ///                   get all info from the table
         /// </summary>
         /// <returns></returns>
+        [DataObjectMethod(DataObjectMethodType.Select)]
         public static List<Package> GetAllPackage()
         {
             Package pkg = null;
@@ -59,8 +62,50 @@ namespace Data
             }
         }// end of GetPackages
 
+        [DataObjectMethod(DataObjectMethodType.Select)]
+        public static Package GetPackageByID(int packageID)
+        {
+            Package pkg = new Package();
+            // create connection
+            using (SqlConnection connection = TravelExpertsDB.GetConnection())
+            {
+
+                // creat select command
+                string query = "select PackageId, PkgName,PkgStartDate,PkgEndDate,PkgDesc,PkgBasePrice,PkgAgencyCommission from Packages "+
+                               "where PackageId=@PackageId";
+                SqlCommand cmd = new SqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("@PackageId", packageID);
+                // run the command, select query
+
+                connection.Open();
+                using (SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
+                {
+                    while(reader.Read())
+                    {
+
+                    
+                        pkg.PackageId = (int)reader["PackageId"];// not null
+                        pkg.PkgName = reader["PkgName"].ToString(); // not null
+
+                        pkg.PkgStartDate = ReadNullableData(reader, "PkgStartDate");// nullable
+                        pkg.PkgEndDate = ReadNullableData(reader, "PkgEndDate");// nullable
+
+                        pkg.PkgDesc = ReadNullableData(reader, "PkgDesc");// nullable
+
+                        pkg.PkgBasePrice = (decimal)reader["PkgBasePrice"];//null
+
+                        pkg.PkgAgencyCommission = ReadNullableData(reader, "PkgAgencyCommission");// nullable
+                        break;
+
+
+                    }
+                    return pkg;
+                }
+            }
+        }// end of GetPackage
 
         // delete a package and return a sign 
+        [DataObjectMethod(DataObjectMethodType.Delete)]
         public static bool DeletePackage(Package pkg)
         {
             bool success = false;
@@ -122,12 +167,14 @@ namespace Data
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="oldPkg"></param>
-        /// <param name="newPkg"></param>
+        /// <param name="original_Package"></param>
+        /// <param name="package"></param>
         /// <returns></returns>
-        public static bool UpdatePackage(Package oldPkg, Package newPkg)
+        [DataObjectMethod(DataObjectMethodType.Update)]
+        public static int UpdatePackage(Package original_Package, 
+            Package package)
         {
-            bool success = false;// not updated
+            int success = -1;// not updated
             // connection
             SqlConnection connection = TravelExpertsDB.GetConnection();
 
@@ -137,29 +184,29 @@ namespace Data
             string updateStatement = "UPDATE Packages SET PkgName=@NewPkgName, PkgStartDate=@NewPkgStartDate, PkgEndDate=@NewPkgEndDate, " +
                 "PkgDesc=@NewPkgDesc, PkgBasePrice=@NewPkgBasePrice, PkgAgencyCommission=@NewPkgAgencyCommission " + //indetify customer
                 "WHERE PackageId=@OldPackageId "
-                + "AND PkgName=@OldPkgName "
-                + "AND PkgStartDate=@OldPkgStartDate "
-                + "AND PkgEndDate=@OldPkgEndDate "
-                + "AND PkgDesc=@OldPkgDesc "
-                + "AND PkgBasePrice=@OldPkgBasePrice "
-                + "AND PkgAgencyCommission=@OldPkgAgencyCommission "; // optimistic concurrency
+                + "AND PkgName=@OldPkgName ";
+                //+ "AND PkgStartDate=@OldPkgStartDate "
+                //+ "AND PkgEndDate=@OldPkgEndDate "
+                //+ "AND PkgDesc=@OldPkgDesc "
+                //+ "AND PkgBasePrice=@OldPkgBasePrice "
+                //+ "AND PkgAgencyCommission=@OldPkgAgencyCommission "; // optimistic concurrency
             SqlCommand cmd = new SqlCommand(updateStatement, connection);
 
             // supply value
-            cmd.Parameters.AddWithValue("@NewPkgName", newPkg.PkgName);
-            AddWithValueNullable(cmd, "@NewPkgStartDate", newPkg.PkgStartDate);
-            AddWithValueNullable(cmd, "@NewPkgEndDate", newPkg.PkgEndDate);
-            AddWithValueNullable(cmd, "@NewPkgDesc", newPkg.PkgDesc);
-            cmd.Parameters.AddWithValue("@NewPkgBasePrice", newPkg.PkgBasePrice);
-            AddWithValueNullable(cmd, "@NewPkgAgencyCommission", newPkg.PkgAgencyCommission);
+            cmd.Parameters.AddWithValue("@NewPkgName", package.PkgName);
+            AddWithValueNullable(cmd, "@NewPkgStartDate", package.PkgStartDate);
+            AddWithValueNullable(cmd, "@NewPkgEndDate", package.PkgEndDate);
+            AddWithValueNullable(cmd, "@NewPkgDesc", package.PkgDesc);
+            cmd.Parameters.AddWithValue("@NewPkgBasePrice", package.PkgBasePrice);
+            AddWithValueNullable(cmd, "@NewPkgAgencyCommission", package.PkgAgencyCommission);
 
-            cmd.Parameters.AddWithValue("@OldPackageId", oldPkg.PackageId);
-            cmd.Parameters.AddWithValue("@OldPkgName", oldPkg.PkgName);
-            AddWithValueNullable(cmd, "@OldPkgStartDate", oldPkg.PkgStartDate);
-            AddWithValueNullable(cmd, "@OldPkgEndDate", oldPkg.PkgEndDate);
-            AddWithValueNullable(cmd, "@OldPkgDesc", oldPkg.PkgDesc);
-            cmd.Parameters.AddWithValue("@OldPkgBasePrice", oldPkg.PkgBasePrice);
-            AddWithValueNullable(cmd, "@OldPkgAgencyCommission", oldPkg.PkgAgencyCommission);
+            cmd.Parameters.AddWithValue("@OldPackageId", original_Package.PackageId);
+            cmd.Parameters.AddWithValue("@OldPkgName", original_Package.PkgName);
+            AddWithValueNullable(cmd, "@OldPkgStartDate", original_Package.PkgStartDate);
+            AddWithValueNullable(cmd, "@OldPkgEndDate", original_Package.PkgEndDate);
+            AddWithValueNullable(cmd, "@OldPkgDesc", original_Package.PkgDesc);
+            cmd.Parameters.AddWithValue("@OldPkgBasePrice", original_Package.PkgBasePrice);
+            AddWithValueNullable(cmd, "@OldPkgAgencyCommission", original_Package.PkgAgencyCommission);
 
             try
             {
@@ -169,7 +216,7 @@ namespace Data
 
                 //if successful
                 if (count > 0)
-                    success = true; // updated
+                    success = count; // updated
             }
             catch (Exception ex)
             {
@@ -185,6 +232,7 @@ namespace Data
 
 
         // insert new row to table Packages
+        [DataObjectMethod(DataObjectMethodType.Insert)]
         public static int AddPackage(Package pkg)
         {
             int pkgID = 0;
